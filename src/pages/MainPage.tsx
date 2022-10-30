@@ -1,108 +1,98 @@
-import { report } from "process";
 import { useState } from "react";
 import { Block } from "../components";
-import { DEFAULT_CREDIT, SYMBOLS } from "../enums";
+import { DEFAULT_CREDIT, SYMBOLS, INITIAL_STATE } from "../enums";
 import { BlockState } from "../interfaces";
 import { getRandomNumber, checkEqualSymbols } from "../utils";
 
 export default function MainPage() {
-  let initialState = [
-    {
-      block: 1,
-      symbol: {
-        name: "",
-        credits: 0,
-        char: "",
-      },
-    },
-    {
-      block: 2,
-      symbol: {
-        name: "",
-        credits: 0,
-        char: "",
-      },
-    },
-    {
-      block: 3,
-      symbol: {
-        name: "",
-        credits: 0,
-        char: "",
-      },
-    },
-  ];
-  const [credit, setCredit] = useState<number>(DEFAULT_CREDIT);
-  const [state, setState] = useState<Array<BlockState>>(initialState);
-  let reroll = true;
+  const [credit, setCredit] = useState<number>(70);
+  const [state, setState] = useState<Array<BlockState>>(INITIAL_STATE);
+
+  let reRoll = true;
+
+  const win = (initialState: Array<BlockState>) => {
+    setState(initialState);
+    setCredit((prev) => prev + initialState[0].symbol.credits);
+  };
 
   const rollRequest = () => {
-    initialState = [
+    let initialState = [
       {
         block: 1,
-        symbol: SYMBOLS[getRandomNumber(4)],
+        symbol: SYMBOLS[getRandomNumber(2)],
       },
       {
         block: 2,
-        symbol: SYMBOLS[getRandomNumber(4)],
+        symbol: SYMBOLS[getRandomNumber(2)],
       },
       {
         block: 3,
-        symbol: SYMBOLS[getRandomNumber(4)],
+        symbol: SYMBOLS[getRandomNumber(2)],
       },
     ];
+
     if (checkEqualSymbols(initialState)) {
       if (credit >= 40 && credit <= 60) {
-        const prcNum = getRandomNumber(10);
+        const prcNum = getRandomNumber(10) + 1;
         if (prcNum <= 3) {
-          if (reroll) {
-            reroll = false;
+          if (reRoll) {
+            reRoll = false;
             return rollRequest();
           }
         }
-        setCredit((prev) => prev + initialState[0].symbol.credits);
-        reroll = true;
-        return;
+        win(initialState);
+        reRoll = true;
       }
       if (credit > 60) {
-        const prcNum = getRandomNumber(10);
+        const prcNum = getRandomNumber(10) + 1;
         if (prcNum >= 4) {
-          if (reroll) {
-            reroll = false;
+          if (reRoll) {
+            reRoll = false;
             return rollRequest();
           }
         }
-        setCredit((prev) => prev + initialState[0].symbol.credits);
-        reroll = true;
-        return;
+        win(initialState);
+        reRoll = true;
       }
-
-      setCredit((prev) => prev + initialState[0].symbol.credits);
-      reroll = true;
+      win(initialState);
+      reRoll = true;
     } else {
+      setState(initialState);
       setCredit((prev) => prev - 1);
     }
-    setState(initialState);
-    return;
   };
 
   const handleOnClick = () => {
     rollRequest();
   };
 
+  const handleCashOut = () => {
+    setCredit(DEFAULT_CREDIT);
+    setState(INITIAL_STATE);
+  };
+
   return (
     <div className="app">
-      <h1>{`You have ${credit} credits.`}</h1>
+      <h1 className="d-flex">{`You have ${credit} credits.`}</h1>
       <div className="d-flex row">
         {state.map((el: BlockState) => (
           <Block key={el.block} state={el} />
         ))}
+      </div>
+      <div className="d-flex my-2">
         <button
           className="mx-1"
           onClick={handleOnClick}
           disabled={credit === 0}
         >
           START
+        </button>
+        <button
+          className="mx-1"
+          onClick={handleCashOut}
+          disabled={credit === 0}
+        >
+          CASH OUT
         </button>
       </div>
     </div>

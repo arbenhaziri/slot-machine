@@ -5,7 +5,7 @@ import { BlockState } from "../interfaces";
 import { getRandomNumber, checkEqualSymbols } from "../utils";
 
 export default function MainPage() {
-  const [credit, setCredit] = useState<number>(70);
+  const [credit, setCredit] = useState<number>(DEFAULT_CREDIT);
   const [state, setState] = useState<Array<BlockState>>(INITIAL_STATE);
 
   let reRoll = true;
@@ -19,15 +19,15 @@ export default function MainPage() {
     let initialState = [
       {
         block: 1,
-        symbol: SYMBOLS[getRandomNumber(2)],
+        symbol: SYMBOLS[getRandomNumber(4)],
       },
       {
         block: 2,
-        symbol: SYMBOLS[getRandomNumber(2)],
+        symbol: SYMBOLS[getRandomNumber(4)],
       },
       {
         block: 3,
-        symbol: SYMBOLS[getRandomNumber(2)],
+        symbol: SYMBOLS[getRandomNumber(4)],
       },
     ];
 

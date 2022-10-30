@@ -1,0 +1,10 @@
+.block {
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: fit-content;
+    padding: 20px;
+}
+
+h2 {
+    margin: 0px;
+}

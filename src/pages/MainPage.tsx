@@ -12,7 +12,9 @@ export default function MainPage() {
 
   const win = (initialState: Array<BlockState>) => {
     setState(initialState);
-    setCredit((prev) => prev + initialState[0].symbol.credits);
+    setTimeout(() => {
+      setCredit((prev) => prev + initialState[0].symbol.credits);
+    }, 3000);
   };
 
   const rollRequest = () => {
@@ -34,22 +36,20 @@ export default function MainPage() {
     if (checkEqualSymbols(initialState)) {
       if (credit >= 40 && credit <= 60) {
         const prcNum = getRandomNumber(10) + 1;
-        if (prcNum <= 3) {
-          if (reRoll) {
-            reRoll = false;
-            return rollRequest();
-          }
+        // It has 30 prc chance to reroll
+        if (prcNum <= 3 && reRoll) {
+          reRoll = false;
+          return rollRequest();
         }
         win(initialState);
         reRoll = true;
       }
       if (credit > 60) {
         const prcNum = getRandomNumber(10) + 1;
-        if (prcNum >= 4) {
-          if (reRoll) {
-            reRoll = false;
-            return rollRequest();
-          }
+        // It has 60 prc chance to reroll
+        if (prcNum >= 4 && reRoll) {
+          reRoll = false;
+          return rollRequest();
         }
         win(initialState);
         reRoll = true;
@@ -58,7 +58,9 @@ export default function MainPage() {
       reRoll = true;
     } else {
       setState(initialState);
-      setCredit((prev) => prev - 1);
+      setTimeout(() => {
+        setCredit((prev) => prev - 1);
+      }, 3000);
     }
   };
 
